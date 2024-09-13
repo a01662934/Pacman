@@ -1,14 +1,3 @@
-"""Pacman, classic arcade game.
-
-Exercises
-
-1. Change the board.
-2. Change the number of ghosts.
-3. Change where pacman starts.
-4. Make the ghosts faster/slower.
-5. Make the ghosts smarter.
-"""
-
 from random import choice
 from turtle import *
 
@@ -25,7 +14,7 @@ ghosts = [
     [vector(100, 160), vector(0, -5)],
     [vector(100, -160), vector(-5, 0)],
 ]
-# fmt: off
+
 tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
@@ -48,8 +37,6 @@ tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
-# fmt: on
-
 
 def square(x, y):
     """Draw square using path at (x, y)."""
@@ -131,8 +118,20 @@ def move():
     dot(20, 'yellow')
 
     for point, course in ghosts:
-        if valid(point + course):
-            point.move(course)
+        distance = abs(pacman - point)
+
+        if distance < 100:
+            # duplicamos la velocidad cuando Pacman está cerca
+            speed_multiplier = 2
+        else:
+            # si Pacman está lejos, mantenemos la velocidad normal
+            speed_multiplier = 1
+
+        # mover al fantasma con velocidad ajustada
+        next_point = vector(course.x * speed_multiplier, course.y * speed_multiplier)
+
+        if valid(point + next_point):
+            point.move(next_point)
         else:
             options = [
                 vector(5, 0),
